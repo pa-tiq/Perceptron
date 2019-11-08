@@ -65,13 +65,12 @@ class Perceptron:
     def graph(self,formula, x_range):  
         a = np.array(x_range)  
         y = formula(a)  # <- note now we're calling the function 'formula' with x
-        plt.plot(a, y)   
+        plt.plot(a, y/np.linalg.norm(y))   
 
     def plot(self,x,y):
         plt.figure(figsize=(7,5))
-        self.graph(lambda a: +((-(self.limiar / self.pesos[1]) / (self.limiar / self.pesos[0]))*a + (-self.limiar / self.pesos[1])), range(-11, 10))
-        plt.plot(x[0], x[1])
-        plt.legend()
+        self.graph(lambda a: +((-(self.limiar / self.pesos[1]) / (self.limiar / self.pesos[0]))*a + (-self.limiar / self.pesos[1])), range(-10, 10))
+        plt.plot(x, y, 'ro')
         plt.show()
 
 #Exemplo
