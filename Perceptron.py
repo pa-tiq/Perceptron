@@ -1,9 +1,13 @@
 import random
 import copy
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import numpy as np
+
 
 class Perceptron:
 
-    def __init__(self, amostras_n, saidas, taxa_aprendizado=0.1, epocas=1000, limiar=-1):
+    def __init__(self, amostras_n, saidas, taxa_aprendizado=0.1, epocas=1000, limiar=-0.8649, pesos=[0.3092, 0.3129]):
         self.amostras = amostras_n
         self.saidas = saidas
         self.taxa_aprendizado = taxa_aprendizado
@@ -11,7 +15,7 @@ class Perceptron:
         self.limiar = limiar
         self.n_amostras = len(amostras)
         self.n_atributos = len(amostras[0])
-        self.pesos = []
+        self.pesos = pesos
     
     def treinar(self):
     
@@ -21,7 +25,7 @@ class Perceptron:
         for i in range(self.n_atributos):
             self.pesos.append(random.random())
     
-        self.pesos.insert(0, self.limiar)
+        #self.pesos.insert(0, self.limiar)
         n_epocas = 0 # contador de épocas\n"
     
         while True:    
@@ -44,8 +48,6 @@ class Perceptron:
             # critério de parada\n",
             if not erro or n_epocas > self.epocas:
                 break
-            
-            
 
     def teste(self, amostra):
         amostra.insert(0, -1)
@@ -60,10 +62,22 @@ class Perceptron:
             return 1
         return -1
 
+    def graph(self,formula, x_range):  
+        a = np.array(x_range)  
+        y = formula(a)  # <- note now we're calling the function 'formula' with x
+        plt.plot(a, y)   
+
+    def plot(self,x,y):
+        plt.figure(figsize=(7,5))
+        self.graph(lambda a: +((-(self.limiar / self.pesos[1]) / (self.limiar / self.pesos[0]))*a + (-self.limiar / self.pesos[1])), range(-11, 10))
+        plt.plot(x[0], x[1])
+        plt.legend()
+        plt.show()
 
 #Exemplo
-amostras = [[1, 1, 1], [1, 1, 0], [1, 0, 1], [1, 0, 0], [0, 1, 1], [0, 1, 0], [0, 0, 1], [0, 0, 0]]
-saidas = [[1,1], [1,1], [1,-1], [1,-1], [-1,1], [-1,1], [-1,-1], [-1,-1]]
+amostras = [[1, 1], [1, 0], [0, 1], [0, 0]]
+saidas = [[1], [1], [1], [0]]
+
 for j in range (len(saidas[0])):
     saidas_rede = []    
     amostras_n = copy.deepcopy(amostras)
@@ -71,7 +85,12 @@ for j in range (len(saidas[0])):
         saidas_rede.append(saidas[i][j])
     rede = Perceptron(amostras_n, saidas_rede)
     rede.treinar()
-    rede.teste([0, 0, 1])
-    del rede
-    del saidas_rede
-    del amostras_n
+
+rede.teste([0, 0])
+rede.teste([0, 1])
+rede.teste([1, 0])
+rede.teste([1, 1])
+rede.plot(amostras,saidas)
+del rede
+del saidas_rede
+del amostras_n
